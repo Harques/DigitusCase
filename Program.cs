@@ -1,5 +1,7 @@
 using DigitusCase;
 using DigitusCase.Data;
+using DigitusCase.Interfaces;
+using DigitusCase.Services;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,8 +14,12 @@ builder.Services.AddControllers(options => options.Conventions.Add(new RouteToke
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApiDbContext>(opt =>
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<LibraryContext>(opt =>
         opt.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 var app = builder.Build();
 
@@ -30,7 +36,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UsePathBase(new PathString("/api/service"));
 app.UseRouting();
 
 app.Run();

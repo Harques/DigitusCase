@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DigitusCase.Dtos;
+using DigitusCase.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +11,14 @@ namespace DigitusCase.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         // GET: api/<UserController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -29,10 +39,11 @@ namespace DigitusCase.Controllers
         }
 
         // POST api/<user>
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] string value)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] UserDto request)
         {
-            return Ok(value);
+            await _userService.Create(request);
+            return Ok();
         }
 
         // PUT api/<UserController>/5
