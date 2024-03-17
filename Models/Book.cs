@@ -12,6 +12,8 @@ namespace DigitusCase.Models
         public string? Author { get; set; }
         public string? Type { get; set; }
         public DateTime? DateOfIssue { get; set; }
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
 
     }

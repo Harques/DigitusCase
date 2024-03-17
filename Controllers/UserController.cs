@@ -40,10 +40,9 @@ namespace DigitusCase.Controllers
 
         // POST api/<user>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserDto request)
+        public IActionResult Create([FromBody] UserDto request)
         {
-            await _userService.Create(request);
-            return Ok();
+            return Ok(_userService.Create(request));
         }
 
         // PUT api/<UserController>/5
