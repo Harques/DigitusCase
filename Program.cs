@@ -121,9 +121,12 @@ builder.Services.AddSwaggerGen(c =>
                     new string[] {}
                 }
             });
+    c.EnableAnnotations();
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 

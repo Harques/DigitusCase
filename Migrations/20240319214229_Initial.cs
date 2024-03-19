@@ -31,8 +31,7 @@ namespace DigitusCase.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Surname = table.Column<string>(type: "text", nullable: true),
+                    FullName = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -60,17 +59,11 @@ namespace DigitusCase.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    CategoryId = table.Column<int>(type: "integer", nullable: true)
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -189,7 +182,8 @@ namespace DigitusCase.Migrations
                     Author = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: true),
                     DateOfIssue = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CategoryId = table.Column<int>(type: "integer", nullable: false)
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    LastUpdatedBy = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,14 +264,13 @@ namespace DigitusCase.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_CategoryId",
-                table: "Categories",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CategoryRelationships_SubCategoryId",
                 table: "CategoryRelationships",
                 column: "SubCategoryId");
+
+            migrationBuilder.Sql(@"CREATE UNIQUE INDEX CategoryId_sameas_SubCategoryId 
+                                 ON ""CategoryRelationships"" (LEAST(""CategoryId"", ""SubCategoryId""), 
+                                           GREATEST(""CategoryId"", ""SubCategoryId""));");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

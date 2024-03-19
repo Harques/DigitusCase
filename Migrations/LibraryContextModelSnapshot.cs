@@ -39,6 +39,9 @@ namespace DigitusCase.Migrations
                     b.Property<DateTime?>("DateOfIssue")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -60,9 +63,6 @@ namespace DigitusCase.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -72,8 +72,6 @@ namespace DigitusCase.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -117,14 +115,14 @@ namespace DigitusCase.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FullName")
+                        .HasColumnType("text");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -144,9 +142,6 @@ namespace DigitusCase.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Surname")
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -311,13 +306,6 @@ namespace DigitusCase.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("DigitusCase.Models.Category", b =>
-                {
-                    b.HasOne("DigitusCase.Models.Category", null)
-                        .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("DigitusCase.Models.CategoryRelationship", b =>
                 {
                     b.HasOne("DigitusCase.Models.Category", "Category")
@@ -386,11 +374,6 @@ namespace DigitusCase.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DigitusCase.Models.Category", b =>
-                {
-                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

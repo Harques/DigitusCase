@@ -62,7 +62,7 @@ namespace DigitusCase.Services
         {
             var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, _user.UserName)
+            new Claim("name", _user.FullName)
         };
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
