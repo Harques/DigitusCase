@@ -1,6 +1,10 @@
-﻿namespace DigitusCase.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace DigitusCase.Controllers
 {
-    public class CategoryController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoryController : ControllerBase
     {
     }
 }

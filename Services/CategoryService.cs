@@ -1,6 +1,6 @@
 ﻿namespace DigitusCase.Services
 {
-    public class Category
+    public class CategoryService
     {
     }
 }

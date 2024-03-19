@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DigitusCase.Dtos
+namespace DigitusCase.Dtos.User
 {
-    public class UserDto
+    public class UserRegisterDto
     {
         public string? Name { get; set; }
         public string? Surname { get; set; }
 
         [Required]
-        public string Email { get; set; } 
+        public string Email { get; set; }
+        [Required]
         public string? Password { get; set; }
-
     }
 }

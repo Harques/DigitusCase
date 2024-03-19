@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DigitusCase.Dtos;
+using DigitusCase.Dtos.User;
 using DigitusCase.Models;
 
 namespace DigitusCase.Helpers
@@ -7,8 +7,8 @@ namespace DigitusCase.Helpers
     public class UserProfile : Profile
     {
         public UserProfile() {
-            CreateMap<User, UserDto>();
-            CreateMap<UserDto, User>();
+            CreateMap<User, UserLoginDto>();
+            CreateMap<UserRegisterDto, User>();
 
         }
 
