@@ -2,6 +2,7 @@
 using DigitusCase.Interfaces;
 using DigitusCase.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Npgsql;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,10 +15,12 @@ namespace DigitusCase.Controllers
     {
 
         private readonly IUserService _userService;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IStringLocalizer<Messages> localizer)
         {
             _userService = userService;
+            _localizer = localizer;
         }
 
         // POST api/<user>
@@ -32,7 +35,7 @@ namespace DigitusCase.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginDto request)
         {
             return !await _userService.ValidateUserAsync(request)
-                ? Unauthorized()
+                ? Unauthorized(_localizer["UnauthorizedMessage"].Value)
                 : Ok(new { Token = await _userService.CreateTokenAsync() });
         }
 

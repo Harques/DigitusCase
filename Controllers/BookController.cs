@@ -4,6 +4,7 @@ using DigitusCase.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace DigitusCase.Controllers
@@ -14,10 +15,12 @@ namespace DigitusCase.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, IStringLocalizer<Messages> localizer)
         {
             _bookService = bookService;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -32,7 +35,7 @@ namespace DigitusCase.Controllers
 
             if (book == null) 
             {
-                return NotFound();
+                return NotFound(_localizer["NotFoundMessage"].Value);
             }
 
             return Ok(book);
@@ -56,7 +59,7 @@ namespace DigitusCase.Controllers
 
             if (!_bookService.EntityExists(id))
             {
-                return NotFound();
+                return NotFound(_localizer["NotFoundMessage"].Value);
             }
 
             string userName = await GetUserName();
@@ -72,7 +75,7 @@ namespace DigitusCase.Controllers
 
             if (!_bookService.EntityExists(id))
             {
-                return NotFound();
+                return NotFound(_localizer["NotFoundMessage"].Value);
             }
 
             _bookService.DeleteById(id);

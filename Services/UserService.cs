@@ -32,7 +32,6 @@ namespace DigitusCase.Services
 
             var user = _mapper.Map<User>(userRegisterDto);
             user.UserName = userRegisterDto.Email;
-            //user.Password = BCrypt.HashPassword(userDto.Password);
             return await _userManager.CreateAsync(user, userRegisterDto.Password);
         }
         public async Task<bool> ValidateUserAsync(UserLoginDto loginDto)

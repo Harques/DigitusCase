@@ -1,20 +1,48 @@
 using DigitusCase;
 using DigitusCase.Data;
+using DigitusCase.Helpers;
 using DigitusCase.Interfaces;
 using DigitusCase.Models;
 using DigitusCase.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Configuration;
+using System.Globalization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+            new CultureInfo("en"),
+            new CultureInfo("tr")
+        };
+
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(context =>
+    {
+        //...
+        var userLangs = context.Request.Headers["Accept-Language"].ToString();
+        var firstLang = userLangs.Split(',').FirstOrDefault();
+        var defaultLang = string.IsNullOrEmpty(firstLang) ? "en" : firstLang;
+        return Task.FromResult(new ProviderCultureResult(defaultLang, defaultLang));
+    }));
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -85,7 +113,10 @@ builder.Services.ConfigureApplicationCookie(o =>
 });
 // Add services to the container.
 
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer())));
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()))).AddDataAnnotationsLocalization(options => {
+    options.DataAnnotationLocalizerProvider = (type, factory) =>
+        factory.Create(typeof(Messages));
+}); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -122,6 +153,7 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
     c.EnableAnnotations();
+    c.OperationFilter<AcceptLanguageHeaderParameter>();
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -137,7 +169,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection(); 
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

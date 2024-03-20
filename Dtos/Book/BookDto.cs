@@ -9,15 +9,15 @@ namespace DigitusCase.Dtos.Book
 {
     public class BookDto
     {
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public string Author { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public string Type { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public DateTime DateOfIssue { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public int CategoryId { get; set; }
         [SwaggerSchema(ReadOnly = true)]
         public string? LastUpdatedBy { get; set; }

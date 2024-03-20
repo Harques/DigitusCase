@@ -4,9 +4,9 @@ namespace DigitusCase.Dtos.User
 {
     public class UserLoginDto
     {
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public string Email { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public string? Password { get; set; }
 
     }

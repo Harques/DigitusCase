@@ -5,6 +5,7 @@ using DigitusCase.Dtos.Category;
 using DigitusCase.Interfaces;
 using DigitusCase.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.Xml;
 
 namespace DigitusCase.Services
@@ -13,10 +14,13 @@ namespace DigitusCase.Services
     {
         private readonly LibraryContext _libraryContext;
         private readonly IMapper _mapper;
-        public CategoryService(LibraryContext libraryContext, IMapper mapper)
+        private readonly IStringLocalizer<CategoryService> _localizer;
+
+        public CategoryService(LibraryContext libraryContext, IMapper mapper, IStringLocalizer<CategoryService> localizer)
         {
             _libraryContext = libraryContext;
             _mapper = mapper;
+            _localizer = localizer;
         }
 
         public void Create(CategoryDto categoryDto)
@@ -47,7 +51,7 @@ namespace DigitusCase.Services
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new ApplicationException("Exception occurred, rolling back transaction: " + ex.Message);
+                    throw new ApplicationException(_localizer["RollbackMessage"].Value);
 
                 }
             }
@@ -119,7 +123,7 @@ namespace DigitusCase.Services
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new ApplicationException("Exception occurred, rolling back transaction: " + ex.Message);
+                    throw new ApplicationException(_localizer["RollbackMessage"].Value);
 
                 }
             }
